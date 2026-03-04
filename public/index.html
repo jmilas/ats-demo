@@ -487,6 +487,53 @@
   .lov-agent-deploy { margin-top: 8px; width: 100%; }
   .lov-agent-deploy .add-to-slack-btn { width: 100%; justify-content: center; align-self: stretch; }
 
+  /* ── Lovable Admin Settings (parent app install) ── */
+  #screen-lovable-admin { flex-direction: column; padding-bottom: 52px; }
+  .lov-admin-chrome { display: flex; flex-direction: column; flex: 1; background: #FAFAFA; color: #1A1A2E; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+  .lov-admin-topbar { display: flex; align-items: center; padding: 0 20px; height: 48px; background: #fff; border-bottom: 1px solid #E8E8EC; }
+  .lov-admin-topbar-logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; color: #1A1A2E; }
+  .lov-admin-body { display: flex; flex: 1; overflow: hidden; }
+  .lov-admin-sidebar { width: 240px; background: #fff; border-right: 1px solid #E8E8EC; padding: 20px 0; }
+  .lov-admin-sidebar-title { font-size: 11px; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: 0.5px; padding: 0 20px; margin-bottom: 8px; }
+  .lov-admin-sidebar-item {
+    display: flex; align-items: center; gap: 10px; padding: 9px 20px; font-size: 14px; color: #555; cursor: default; transition: var(--transition);
+  }
+  .lov-admin-sidebar-item.active { background: #F5F0FF; color: #9333EA; font-weight: 600; border-right: 3px solid #9333EA; }
+  .lov-admin-sidebar-item svg { width: 18px; height: 18px; opacity: 0.5; }
+  .lov-admin-sidebar-item.active svg { opacity: 1; }
+  .lov-admin-main { flex: 1; padding: 40px 48px; overflow-y: auto; }
+  .lov-admin-heading { font-size: 22px; font-weight: 700; color: #1A1A2E; margin-bottom: 6px; }
+  .lov-admin-subheading { font-size: 14px; color: #888; margin-bottom: 32px; line-height: 1.5; }
+  .lov-admin-section { margin-bottom: 32px; }
+  .lov-admin-section-title { font-size: 14px; font-weight: 700; color: #1A1A2E; margin-bottom: 16px; }
+  .lov-admin-integration {
+    background: #fff; border: 1px solid #E8E8EC; border-radius: 12px; padding: 20px 24px;
+    display: flex; align-items: center; gap: 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+  .lov-admin-integration-icon {
+    width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .lov-admin-integration-icon svg { width: 28px; height: 28px; }
+  .lov-admin-integration-info { flex: 1; }
+  .lov-admin-integration-name { font-size: 15px; font-weight: 700; color: #1A1A2E; }
+  .lov-admin-integration-desc { font-size: 13px; color: #888; margin-top: 2px; line-height: 1.4; }
+  .lov-admin-integration-status { font-size: 12px; color: #888; margin-top: 6px; display: flex; align-items: center; gap: 6px; }
+  .lov-admin-integration-status .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .lov-admin-integration-status .dot.connected { background: #2EB67D; }
+  .lov-admin-integration-status .dot.disconnected { background: #CCC; }
+  .lov-admin-connect-btn {
+    padding: 10px 22px; border-radius: 8px; font-size: 14px; font-weight: 600;
+    background: linear-gradient(135deg, #EC4899, #D946EF); color: #fff; border: none;
+    box-shadow: 0 2px 8px rgba(236,72,153,0.25); transition: var(--transition); cursor: pointer; white-space: nowrap;
+  }
+  .lov-admin-connect-btn:hover { filter: brightness(1.05); transform: translateY(-1px); }
+  .lov-admin-note {
+    margin-top: 20px; padding: 14px 18px; background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 8px;
+    font-size: 13px; color: #92400E; line-height: 1.5; display: flex; gap: 10px; align-items: flex-start;
+  }
+  .lov-admin-note-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
   /* ── OpenAI Agent Builder (custom screen) ── */
   #screen-openai-builder {
     flex-direction: column; padding-bottom: 52px;
@@ -1300,6 +1347,89 @@
   </div>
 </div>
 
+<!-- ─── Screen 3-LOV: Lovable Admin Settings (parent app install) ─── -->
+<div class="screen" id="screen-lovable-admin">
+  <div class="lov-admin-chrome">
+    <div class="lov-admin-topbar">
+      <div class="lov-admin-topbar-logo">
+        <div class="lov-heart">&#9829;</div>
+        Lovable
+      </div>
+      <div class="lov-topbar-project"><span>/</span> Workspace Settings</div>
+      <div class="lov-topbar-actions">
+        <button class="lov-topbar-btn">Help</button>
+      </div>
+    </div>
+    <div class="lov-admin-body">
+      <div class="lov-admin-sidebar">
+        <div class="lov-admin-sidebar-title">Workspace</div>
+        <div class="lov-admin-sidebar-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Members
+        </div>
+        <div class="lov-admin-sidebar-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Security
+        </div>
+        <div class="lov-admin-sidebar-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          Billing
+        </div>
+        <div class="lov-admin-sidebar-item active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Integrations
+        </div>
+        <div class="lov-admin-sidebar-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          API Keys
+        </div>
+      </div>
+      <div class="lov-admin-main">
+        <div class="lov-admin-heading">Integrations</div>
+        <div class="lov-admin-subheading">Connect third-party services to deploy agents from your Lovable workspace. These integrations are managed by workspace admins and shared across all projects.</div>
+
+        <div class="lov-admin-section">
+          <div class="lov-admin-section-title">Deployment Targets</div>
+          <div class="lov-admin-integration">
+            <div class="lov-admin-integration-icon" style="background: #F5F0FF; border-radius: 10px;">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 124 124" width="28" height="28" shape-rendering="geometricPrecision"><path d="M26.4 78.9a12.9 12.9 0 1 1-25.8 0 12.9 12.9 0 0 1 12.9-12.9h12.9v12.9z" fill="#E01E5A"/><path d="M32.8 78.9a12.9 12.9 0 1 1 25.8 0v32.3a12.9 12.9 0 1 1-25.8 0V78.9z" fill="#E01E5A"/><path d="M45.7 26.4a12.9 12.9 0 1 1 0-25.8 12.9 12.9 0 0 1 12.9 12.9v12.9H45.7z" fill="#36C5F0"/><path d="M45.7 32.8a12.9 12.9 0 1 1 0 25.8H13.4a12.9 12.9 0 0 1 0-25.8h32.3z" fill="#36C5F0"/><path d="M98.2 45.7a12.9 12.9 0 1 1 25.8 0 12.9 12.9 0 0 1-12.9 12.9H98.2V45.7z" fill="#2EB67D"/><path d="M91.8 45.7a12.9 12.9 0 0 1-25.8 0V13.4a12.9 12.9 0 1 1 25.8 0v32.3z" fill="#2EB67D"/><path d="M78.9 98.2a12.9 12.9 0 1 1 0 25.8 12.9 12.9 0 0 1-12.9-12.9V98.2h12.9z" fill="#ECB22E"/><path d="M78.9 91.8a12.9 12.9 0 1 1 0-25.8h32.3a12.9 12.9 0 0 1 0 25.8H78.9z" fill="#ECB22E"/></svg>
+            </div>
+            <div class="lov-admin-integration-info">
+              <div class="lov-admin-integration-name">Slack</div>
+              <div class="lov-admin-integration-desc">Deploy AI agents to your Slack workspace. Agents get their own identity, can respond to DMs, mentions, and more.</div>
+              <div class="lov-admin-integration-status"><span class="dot disconnected"></span> Not connected</div>
+            </div>
+            <button class="lov-admin-connect-btn" onclick="lovableAdminConnect()">Connect to Slack</button>
+          </div>
+        </div>
+
+        <div class="lov-admin-section">
+          <div class="lov-admin-section-title">Other Integrations</div>
+          <div class="lov-admin-integration" style="opacity: 0.5;">
+            <div class="lov-admin-integration-icon" style="background: #F0F0F0; border-radius: 10px;">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#666" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+            </div>
+            <div class="lov-admin-integration-info">
+              <div class="lov-admin-integration-name">Vercel</div>
+              <div class="lov-admin-integration-desc">Deploy web apps and serverless functions to Vercel.</div>
+              <div class="lov-admin-integration-status"><span class="dot connected"></span> Connected</div>
+            </div>
+            <button class="lov-admin-connect-btn" style="background: #E8E8EC; color: #888; box-shadow: none;" disabled>Connected</button>
+          </div>
+        </div>
+
+        <div class="lov-admin-note">
+          <span class="lov-admin-note-icon">&#9888;&#65039;</span>
+          <span><strong>Admin-only action.</strong> Connecting to Slack installs the <em>Lovable for Slack</em> parent app to your Slack workspace. This is a one-time setup. Once connected, any team member can deploy agents to Slack from their projects. All provisioned agent apps are owned by the admin who completed this connection.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-annotation">
+    <strong>Step 3 of 5:</strong> A workspace admin connects Lovable to Slack in the workspace settings. This installs the <strong>parent Slack app</strong> once. End users of each project only see steps 4 &amp; 5.
+  </div>
+</div>
+
 <!-- ─── Screen 2b: OpenAI Agent Builder ─── -->
 <div class="screen" id="screen-openai-builder">
   <div class="oai-chrome">
@@ -1709,8 +1839,10 @@ const partners = {
 
 function getScreens() {
   const builderScreen = (selectedPartner && selectedPartner.builderScreen) || 'screen-replit-builder';
+  const isLovable = selectedPartner && selectedPartner.builderScreen === 'screen-lovable-builder';
   if (currentPhase === 1) {
-    return ['screen-select', builderScreen, 'screen-oauth-parent', 'screen-loading', 'screen-oauth-agent', 'screen-success'];
+    const parentScreen = isLovable ? 'screen-lovable-admin' : 'screen-oauth-parent';
+    return ['screen-select', builderScreen, parentScreen, 'screen-loading', 'screen-oauth-agent', 'screen-success'];
   } else {
     return ['screen-select', builderScreen, 'screen-oauth-combined', 'screen-loading', 'screen-success'];
   }
@@ -1799,9 +1931,13 @@ function clickAddToSlack() {
   }
 
   if (currentPhase === 1) {
-    // Show parent OAuth
-    updateOAuthParent();
-    showScreen('screen-oauth-parent');
+    const isLovable = selectedPartner && selectedPartner.builderScreen === 'screen-lovable-builder';
+    if (isLovable) {
+      showScreen('screen-lovable-admin');
+    } else {
+      updateOAuthParent();
+      showScreen('screen-oauth-parent');
+    }
   } else {
     // Show combined OAuth
     updateOAuthCombined();
@@ -1839,6 +1975,15 @@ function updateOAuthParent() {
 }
 
 function allowParent() {
+  showScreen('screen-loading');
+  runLoading(() => {
+    updateOAuthAgent();
+    showScreen('screen-oauth-agent');
+  });
+}
+
+// ─── Lovable Admin: Connect to Slack ───
+function lovableAdminConnect() {
   showScreen('screen-loading');
   runLoading(() => {
     updateOAuthAgent();
