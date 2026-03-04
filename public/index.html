@@ -35,6 +35,11 @@
     --openai-dark: #202123;
     --openai-sidebar: #171717;
     --openai-surface: #2D2D30;
+    /* Agent Builder (generic) */
+    --ab-blue: #3B82F6;
+    --ab-dark: #0F172A;
+    --ab-surface: #1E293B;
+    --ab-border: #334155;
   }
   html { font-size: 16px; }
   body {
@@ -150,6 +155,7 @@
   .vercel-bg { background: var(--vercel-black); }
   .lovable-bg { background: var(--lovable-pink); }
   .openai-bg { background: var(--openai-dark); }
+  .ab-bg { background: linear-gradient(135deg, var(--ab-blue), #6366F1); }
 
   /* ── Shared: Add to Slack button ── */
   .add-to-slack-btn {
@@ -324,6 +330,87 @@
   .v0-agent-badge { font-size: 11px; padding: 4px 10px; border-radius: 20px; background: #1A1A1A; color: rgba(255,255,255,0.5); border: 1px solid #222; }
   .v0-agent-deploy { margin-top: 8px; width: 100%; }
   .v0-agent-deploy .add-to-slack-btn { width: 100%; justify-content: center; align-self: stretch; }
+
+  /* ═══════════════════════════════════════════
+     AGENT BUILDER (Generic)
+     Chat-based: prompt → generated agent
+     Slate dark (#0F172A), blue (#3B82F6) accent
+     Based on Vercel v0 layout
+     ═══════════════════════════════════════════ */
+  #screen-ab-builder { flex-direction: column; padding-bottom: 52px; }
+  .ab-chrome { display: flex; flex-direction: column; flex: 1; background: var(--ab-dark); color: #E2E8F0; }
+  .ab-topbar { display: flex; align-items: center; padding: 0 20px; height: 48px; border-bottom: 1px solid var(--ab-border); }
+  .ab-topbar-logo { font-size: 17px; font-weight: 800; color: #fff; letter-spacing: -0.3px; display: flex; align-items: center; gap: 10px; }
+  .ab-topbar-logo svg { width: 22px; height: 22px; }
+  .ab-topbar-nav { display: flex; gap: 4px; margin-left: 28px; }
+  .ab-topbar-link {
+    font-size: 13px; color: rgba(255,255,255,0.4); padding: 6px 12px; border-radius: 6px;
+    border: none; background: transparent; transition: var(--transition);
+  }
+  .ab-topbar-link.active { color: #fff; }
+  .ab-topbar-actions { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+  .ab-topbar-btn {
+    padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 600;
+    background: var(--ab-blue); color: #fff; border: none; transition: var(--transition);
+  }
+  .ab-topbar-btn:hover { filter: brightness(1.1); }
+  .ab-topbar-btn.ghost { background: transparent; color: rgba(255,255,255,0.5); border: 1px solid var(--ab-border); }
+  .ab-body { display: flex; flex: 1; overflow: hidden; }
+
+  /* Chat panel */
+  .ab-chat { width: 480px; display: flex; flex-direction: column; border-right: 1px solid var(--ab-border); }
+  .ab-chat-messages { flex: 1; padding: 24px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+  .ab-msg { display: flex; gap: 12px; }
+  .ab-msg-avatar {
+    width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;
+  }
+  .ab-msg-avatar.user { background: var(--ab-surface); color: #fff; }
+  .ab-msg-avatar.ai { background: linear-gradient(135deg, var(--ab-blue), #6366F1); color: #fff; }
+  .ab-msg-content { flex: 1; }
+  .ab-msg-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .ab-msg-text { font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.75); }
+  .ab-msg-text code { background: var(--ab-surface); padding: 1px 5px; border-radius: 3px; font-size: 12px; font-family: 'Geist Mono', monospace; }
+  .ab-msg-artifact {
+    margin-top: 12px; background: var(--ab-surface); border: 1px solid var(--ab-border); border-radius: 10px; overflow: hidden;
+  }
+  .ab-msg-artifact-header {
+    padding: 10px 14px; border-bottom: 1px solid var(--ab-border); font-size: 12px; font-weight: 600;
+    display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.5);
+  }
+  .ab-msg-artifact-body { padding: 16px; font-family: 'Geist Mono', monospace; font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.7; }
+  .ab-msg-artifact-body .kw { color: #C084FC; }
+  .ab-msg-artifact-body .str { color: #34D399; }
+  .ab-msg-artifact-body .cm { color: #64748B; }
+  .ab-chat-input-area { padding: 16px 20px; border-top: 1px solid var(--ab-border); }
+  .ab-chat-input {
+    width: 100%; background: var(--ab-surface); border: 1px solid var(--ab-border); border-radius: 10px;
+    padding: 12px 16px; color: #E2E8F0; font-size: 14px; outline: none; resize: none; min-height: 48px;
+    transition: var(--transition);
+  }
+  .ab-chat-input:focus { border-color: var(--ab-blue); }
+  .ab-chat-input::placeholder { color: rgba(255,255,255,0.25); }
+
+  /* Preview panel */
+  .ab-preview { flex: 1; display: flex; flex-direction: column; background: var(--ab-dark); }
+  .ab-preview-bar { display: flex; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--ab-border); gap: 10px; }
+  .ab-preview-tab {
+    font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.4);
+    padding: 4px 10px; border-radius: 4px; border: none; background: transparent;
+  }
+  .ab-preview-tab.active { color: #fff; background: var(--ab-surface); }
+  .ab-preview-content { flex: 1; display: flex; align-items: center; justify-content: center; padding: 32px; }
+  .ab-agent-card {
+    background: var(--ab-surface); border: 1px solid var(--ab-border); border-radius: 16px; padding: 36px;
+    width: 360px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 16px;
+  }
+  .ab-agent-avatar { width: 64px; height: 64px; border-radius: 16px; background: linear-gradient(135deg, var(--slack-blue), var(--slack-green)); display: flex; align-items: center; justify-content: center; font-size: 26px; color: #fff; }
+  .ab-agent-name { font-size: 20px; font-weight: 700; color: #fff; }
+  .ab-agent-desc { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.5; }
+  .ab-agent-badges { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+  .ab-agent-badge { font-size: 11px; padding: 4px 10px; border-radius: 20px; background: rgba(59,130,246,0.1); color: rgba(255,255,255,0.5); border: 1px solid var(--ab-border); }
+  .ab-agent-deploy { margin-top: 8px; width: 100%; }
+  .ab-agent-deploy .add-to-slack-btn { width: 100%; justify-content: center; align-self: stretch; }
 
   /* ═══════════════════════════════════════════
      LOVABLE Agent Builder
@@ -843,6 +930,14 @@
       <p>Build and deploy agents with the OpenAI Agent Builder</p>
       <div class="tag">Tier 1 Phase 2 Partner</div>
     </div>
+    <div class="partner-card" onclick="selectPartner('agentbuilder')">
+      <div class="partner-icon ab-bg">
+        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><path d="M8 15c1 1.5 3 2.5 4 2.5s3-1 4-2.5"/><path d="M3 8h18"/></svg>
+      </div>
+      <h3>Agent Builder</h3>
+      <p>Build and deploy AI agents with any platform</p>
+      <div class="tag">Generic</div>
+    </div>
   </div>
   <div class="screen-annotation">
     <strong>Step 1 of 5:</strong> The user starts on a partner platform where they've built an agent.
@@ -1037,6 +1132,93 @@
   </div>
   <div class="screen-annotation">
     <strong>Step 2 of 5:</strong> v0 has generated the agent from a natural language prompt. The user clicks <strong>Add Agent to Slack</strong> to deploy it.
+  </div>
+</div>
+
+<!-- ─── Screen 2e: AGENT BUILDER (Generic) ─── -->
+<div class="screen" id="screen-ab-builder">
+  <div class="ab-chrome">
+    <div class="ab-topbar">
+      <div class="ab-topbar-logo">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--ab-blue)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><path d="M8 15c1 1.5 3 2.5 4 2.5s3-1 4-2.5"/><path d="M3 8h18"/></svg>
+        Agent Builder
+      </div>
+      <div class="ab-topbar-nav">
+        <button class="ab-topbar-link">Agents</button>
+        <button class="ab-topbar-link active">Create</button>
+        <button class="ab-topbar-link">Deploy</button>
+      </div>
+      <div class="ab-topbar-actions">
+        <button class="ab-topbar-btn ghost">Docs</button>
+        <button class="ab-topbar-btn">Publish</button>
+      </div>
+    </div>
+    <div class="ab-body">
+      <!-- Chat -->
+      <div class="ab-chat">
+        <div class="ab-chat-messages">
+          <div class="ab-msg">
+            <div class="ab-msg-avatar user">Y</div>
+            <div class="ab-msg-content">
+              <div class="ab-msg-name">You</div>
+              <div class="ab-msg-text">Create an AI agent called PolicyBot that answers employee policy questions using the company handbook. It should support DMs, mentions, and have an App Home tab. Use GPT-4o.</div>
+            </div>
+          </div>
+          <div class="ab-msg">
+            <div class="ab-msg-avatar ai">&#10024;</div>
+            <div class="ab-msg-content">
+              <div class="ab-msg-name">Agent Builder</div>
+              <div class="ab-msg-text">I've created your <code>PolicyBot</code> agent with the following configuration:</div>
+              <div class="ab-msg-artifact">
+                <div class="ab-msg-artifact-header">&#128196; agent.config.ts</div>
+                <div class="ab-msg-artifact-body">
+<span class="kw">export default</span> {
+  name: <span class="str">"PolicyBot"</span>,
+  description: <span class="str">"Answers employee policy questions"</span>,
+  model: <span class="str">"gpt-4o"</span>,
+  capabilities: [<span class="str">"chat"</span>, <span class="str">"mentions"</span>, <span class="str">"app_home"</span>],
+  knowledge: [<span class="str">"./handbook.pdf"</span>],
+} <span class="cm">// ready to deploy</span>
+                </div>
+              </div>
+              <div class="ab-msg-text" style="margin-top:12px;">The agent is ready. You can deploy it to Slack using the button in the preview panel.</div>
+            </div>
+          </div>
+        </div>
+        <div class="ab-chat-input-area">
+          <textarea class="ab-chat-input" placeholder="Describe your agent..." readonly></textarea>
+        </div>
+      </div>
+      <!-- Preview -->
+      <div class="ab-preview">
+        <div class="ab-preview-bar">
+          <button class="ab-preview-tab active">Preview</button>
+          <button class="ab-preview-tab">Code</button>
+        </div>
+        <div class="ab-preview-content">
+          <div class="ab-agent-card">
+            <div class="ab-agent-avatar" id="ab-prev-avatar">P</div>
+            <div class="ab-agent-name" id="ab-prev-name">PolicyBot</div>
+            <div class="ab-agent-desc" id="ab-prev-desc">Answers employee policy questions using the company handbook. Provides accurate, sourced responses about PTO, benefits, expenses, and workplace policies.</div>
+            <div class="ab-agent-badges">
+              <span class="ab-agent-badge">Chat / DM</span>
+              <span class="ab-agent-badge">Mentions</span>
+              <span class="ab-agent-badge">App Home</span>
+              <span class="ab-agent-badge">GPT-4o</span>
+            </div>
+            <div class="ab-agent-deploy">
+              <button class="add-to-slack-btn" onclick="clickAddToSlack()">
+                <svg viewBox="0 0 24 24" fill="none" style="width:20px;height:20px;"><path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.527 2.527 0 0 1-2.52-2.523 2.526 2.526 0 0 1 2.52-2.52h6.313A2.527 2.527 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z" fill="currentColor"/></svg>
+                Add Agent to Slack
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="screen-annotation">
+    <strong>Step 2 of 5:</strong> The developer has built their agent using Agent Builder. They click <strong>Add Agent to Slack</strong> to deploy it.
   </div>
 </div>
 
@@ -1512,6 +1694,16 @@ const partners = {
     builderScreen: 'screen-openai-builder',
     nameInput: 'oai-agent-name',
     iconSvg: true,
+  },
+  agentbuilder: {
+    name: 'Agent Builder',
+    letter: 'A',
+    color: 'var(--ab-blue)',
+    slackAppName: 'Agent Builder for Slack',
+    byLine: 'by Agent Builder',
+    builderScreen: 'screen-ab-builder',
+    nameInput: null,
+    iconSvg: false,
   },
 };
 
