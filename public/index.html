@@ -1426,7 +1426,7 @@
     </div>
   </div>
   <div class="screen-annotation">
-    <strong>Step 3 of 5:</strong> A workspace admin connects Lovable to Slack in the workspace settings. This installs the <strong>parent Slack app</strong> once. End users of each project only see steps 4 &amp; 5.
+    <strong>Step 3 of 7:</strong> A workspace admin connects Lovable to Slack in the workspace settings. This is a one-time setup. Once connected, any team member can deploy agents. All provisioned agent apps are owned by this admin.
   </div>
 </div>
 
@@ -1841,8 +1841,10 @@ function getScreens() {
   const builderScreen = (selectedPartner && selectedPartner.builderScreen) || 'screen-replit-builder';
   const isLovable = selectedPartner && selectedPartner.builderScreen === 'screen-lovable-builder';
   if (currentPhase === 1) {
-    const parentScreen = isLovable ? 'screen-lovable-admin' : 'screen-oauth-parent';
-    return ['screen-select', builderScreen, parentScreen, 'screen-loading', 'screen-oauth-agent', 'screen-success'];
+    if (isLovable) {
+      return ['screen-select', builderScreen, 'screen-lovable-admin', 'screen-oauth-parent', 'screen-loading', 'screen-oauth-agent', 'screen-success'];
+    }
+    return ['screen-select', builderScreen, 'screen-oauth-parent', 'screen-loading', 'screen-oauth-agent', 'screen-success'];
   } else {
     return ['screen-select', builderScreen, 'screen-oauth-combined', 'screen-loading', 'screen-success'];
   }
@@ -1984,11 +1986,8 @@ function allowParent() {
 
 // ─── Lovable Admin: Connect to Slack ───
 function lovableAdminConnect() {
-  showScreen('screen-loading');
-  runLoading(() => {
-    updateOAuthAgent();
-    showScreen('screen-oauth-agent');
-  });
+  updateOAuthParent();
+  showScreen('screen-oauth-parent');
 }
 
 // ─── Screen 3b: OAuth Combined (Phase 2) ───
