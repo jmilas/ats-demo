@@ -337,8 +337,8 @@
      Slate dark (#0F172A), blue (#3B82F6) accent
      Based on Vercel v0 layout
      ═══════════════════════════════════════════ */
-  #screen-ab-builder { flex-direction: column; padding-bottom: 52px; }
-  .ab-chrome { display: flex; flex-direction: column; flex: 1; background: var(--ab-dark); color: #E2E8F0; }
+  #screen-ab-builder { flex-direction: column; padding-bottom: 52px; height: 100vh; max-height: 100vh; overflow: hidden; }
+  .ab-chrome { display: flex; flex-direction: column; flex: 1; min-height: 0; background: var(--ab-dark); color: #E2E8F0; }
   .ab-topbar { display: flex; align-items: center; padding: 0 20px; height: 48px; border-bottom: 1px solid var(--ab-border); }
   .ab-topbar-logo { font-size: 17px; font-weight: 800; color: #fff; letter-spacing: -0.3px; display: flex; align-items: center; gap: 10px; }
   .ab-topbar-logo svg { width: 22px; height: 22px; }
@@ -411,6 +411,64 @@
   .ab-agent-badge { font-size: 11px; padding: 4px 10px; border-radius: 20px; background: rgba(59,130,246,0.1); color: rgba(255,255,255,0.5); border: 1px solid var(--ab-border); }
   .ab-agent-deploy { margin-top: 8px; width: 100%; }
   .ab-agent-deploy .add-to-slack-btn { width: 100%; justify-content: center; align-self: stretch; }
+  .ab-agent-deploy .add-to-slack-btn.disabled { opacity: 0.35; pointer-events: none; }
+
+  /* Interactive mode: empty preview states */
+  .ab-agent-avatar.empty { background: transparent; border: 2px dashed var(--ab-border); color: rgba(255,255,255,0.2); }
+  .ab-agent-name.dim { color: rgba(255,255,255,0.2); }
+  .ab-agent-desc.dim { color: rgba(255,255,255,0.15); font-style: italic; }
+  .ab-agent-badge { transition: opacity 0.4s ease, transform 0.4s ease; }
+
+  /* Typing indicator */
+  .ab-typing { display: flex; gap: 4px; padding: 4px 0; }
+  .ab-typing-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    animation: abBounce 1.2s infinite ease-in-out;
+  }
+  .ab-typing-dot:nth-child(2) { animation-delay: 0.15s; }
+  .ab-typing-dot:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes abBounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.3; }
+    30% { transform: translateY(-6px); opacity: 1; }
+  }
+
+  /* Streaming text cursor */
+  .ab-cursor {
+    display: inline-block; width: 2px; height: 14px; background: var(--ab-blue);
+    margin-left: 2px; vertical-align: text-bottom;
+    animation: abBlink 0.6s infinite;
+  }
+  @keyframes abBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+  /* Toggle switch in demo bar */
+  .topbar-interactive {
+    display: flex; align-items: center; gap: 8px; margin-left: 12px;
+    font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.6);
+  }
+  .topbar-interactive.active { color: #fff; }
+  .toggle-switch {
+    position: relative; display: inline-block; width: 36px; height: 20px;
+  }
+  .toggle-switch input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider {
+    position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255,255,255,0.15); border-radius: 20px;
+    transition: 0.3s;
+  }
+  .toggle-slider::before {
+    content: ''; position: absolute; height: 14px; width: 14px; left: 3px; bottom: 3px;
+    background: #fff; border-radius: 50%; transition: 0.3s;
+  }
+  .toggle-switch input:checked + .toggle-slider { background: var(--ab-blue); }
+  .toggle-switch input:checked + .toggle-slider::before { transform: translateX(16px); }
+
+  /* Fade-in for badges and artifacts */
+  @keyframes abFadeInUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .ab-badge-animate { animation: abFadeInUp 0.4s ease forwards; }
 
   /* ═══════════════════════════════════════════
      LOVABLE Agent Builder
@@ -886,7 +944,27 @@
   }
   .slack-input {
     width: 100%; border: 1px solid var(--border); border-radius: 8px;
-    padding: 12px 16px; font-size: 14px; outline: none; color: var(--slack-muted);
+    padding: 12px 16px; font-size: 14px; outline: none; color: var(--slack-text);
+  }
+  .slack-input:read-only { color: var(--slack-muted); }
+  /* Slack typing indicator */
+  .slack-typing-row { display: flex; gap: 12px; align-items: center; }
+  .slack-typing-avatar {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--slack-blue), var(--slack-green));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: #fff; font-weight: 700; flex-shrink: 0;
+  }
+  .slack-typing-dots { display: flex; gap: 4px; padding: 10px 0; }
+  .slack-typing-dot {
+    width: 8px; height: 8px; border-radius: 50%; background: #B0B0B0;
+    animation: slackBounce 1.2s infinite ease-in-out;
+  }
+  .slack-typing-dot:nth-child(2) { animation-delay: 0.15s; }
+  .slack-typing-dot:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes slackBounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-5px); opacity: 1; }
   }
 
   /* Success overlay (toast) */
@@ -932,6 +1010,13 @@
     <div class="topbar-phase">
       <button class="active" data-phase="1" onclick="setPhase(1)">Phase 1</button>
       <button data-phase="2" onclick="setPhase(2)">Phase 2</button>
+    </div>
+    <div class="topbar-interactive" id="interactive-toggle-wrap">
+      <label class="toggle-switch">
+        <input type="checkbox" id="interactive-toggle" onchange="toggleInteractive()">
+        <span class="toggle-slider"></span>
+      </label>
+      <span>Live Mode</span>
     </div>
   </div>
   <div class="topbar-right">
@@ -1775,6 +1860,8 @@ let currentScreen = 0;
 let selectedPartner = null;
 let agentName = 'PolicyBot';
 let barMinimized = false;
+let interactiveMode = false;
+let abChatStep = 0; // 0=describe, 1=name, 2=capabilities, 3=done
 
 // ─── Demo bar toggle ───
 function toggleDemoBar() {
@@ -1883,14 +1970,22 @@ function updateDots() {
 function restart() {
   currentScreen = 0;
   selectedPartner = null;
+  abChatStep = 0;
   showScreen('screen-select');
   // Reset loading steps
   document.querySelectorAll('#loading-steps .loading-step').forEach((s, i) => {
     s.className = 'loading-step' + (i === 0 ? ' active' : '');
     s.querySelector('.loading-step-icon').innerHTML = '&#9675;';
   });
-  // Clear messages
+  // Clear messages and reset Slack input
   document.getElementById('slack-messages').innerHTML = '';
+  const slackInput = document.getElementById('slack-input');
+  slackInput.readOnly = true;
+  slackInput.value = '';
+  slackInput.onkeydown = null;
+  slackChatStep = 0;
+  // Reset AB builder to static state
+  resetABToStatic();
 }
 
 // ─── Screen 1: Partner Selection ───
@@ -1903,6 +1998,9 @@ function selectPartner(key) {
     agentName = 'PolicyBot';
   }
   showScreen(selectedPartner.builderScreen);
+  if (interactiveMode && key === 'agentbuilder') {
+    initInteractiveAB();
+  }
 }
 
 // ─── Replit builder preview ───
@@ -1926,7 +2024,9 @@ function updateOaiPreview() {
 
 function clickAddToSlack() {
   // Read agent name from the active partner's input
-  if (selectedPartner && selectedPartner.nameInput) {
+  if (interactiveMode && selectedPartner && selectedPartner.builderScreen === 'screen-ab-builder') {
+    // agentName already set by interactive chat at step 2
+  } else if (selectedPartner && selectedPartner.nameInput) {
     agentName = document.getElementById(selectedPartner.nameInput).value || 'PolicyBot';
   } else {
     agentName = 'PolicyBot'; // Vercel/Lovable use pre-set name from chat
@@ -2067,6 +2167,16 @@ function allowAgent() {
 }
 
 // ─── Screen 6: Success ───
+let slackChatStep = 0;
+
+const slackBotResponses = [
+  { text: `New full-time employees at Acme Corp receive <strong>15 days of PTO</strong> per year, starting from their first day. This increases to 20 days after 3 years and 25 days after 5 years. PTO accrues monthly and unused days roll over up to a maximum of 5 days.\n\n<em>Source: Employee Handbook, Section 4.2 — Time Off Policy</em>` },
+  { text: `Acme Corp's remote work policy allows employees to work from home up to <strong>3 days per week</strong>. You'll need to coordinate with your team lead on which days. A stable internet connection and a dedicated workspace are required.\n\n<em>Source: Employee Handbook, Section 6.1 — Remote Work Guidelines</em>` },
+  { text: `Expense reports should be submitted within <strong>30 days</strong> of the expense date through Workday. Meals are capped at $50/day for domestic travel and $75/day for international. Manager approval is required for any single expense over $500.\n\n<em>Source: Employee Handbook, Section 5.3 — Expense Policy</em>` },
+  { text: `Acme Corp offers <strong>12 weeks of paid parental leave</strong> for all new parents, regardless of gender. This can be taken continuously or split into blocks within the first year. You'll need to notify HR at least 30 days in advance.\n\n<em>Source: Employee Handbook, Section 4.5 — Parental Leave</em>` },
+  { text: `The annual review cycle runs in <strong>Q4 (October–December)</strong>. You'll do a self-assessment, receive peer feedback, and have a 1:1 with your manager. Merit increases and promotions are announced in January.\n\n<em>Source: Employee Handbook, Section 7.2 — Performance Reviews</em>` },
+];
+
 function showSuccessScreen() {
   // Update Slack UI with agent details
   const initial = agentName.charAt(0).toUpperCase();
@@ -2079,25 +2189,137 @@ function showSuccessScreen() {
 
   showScreen('screen-success');
 
-  // Simulate a conversation
   const msgs = document.getElementById('slack-messages');
   msgs.innerHTML = '';
+  slackChatStep = 0;
 
-  const conversation = [
-    { type: 'system', text: `<strong>${agentName}</strong> was added to Acme Corp by ${selectedPartner.name}. Say hello!`, delay: 600 },
-    { type: 'bot', name: agentName, text: `Hi there! I'm ${agentName}, your AI-powered assistant. I can help answer questions about company policies, PTO, benefits, expenses, and more. Just ask me anything!`, delay: 1800 },
-    { type: 'user', name: 'You', text: 'How many PTO days do new employees get?', delay: 3800 },
-    { type: 'bot', name: agentName, text: 'New full-time employees at Acme Corp receive <strong>15 days of PTO</strong> per year, starting from their first day. This increases to 20 days after 3 years and 25 days after 5 years. PTO accrues monthly and unused days roll over up to a maximum of 5 days. \n\n<em>Source: Employee Handbook, Section 4.2 \u2014 Time Off Policy</em>', delay: 5800 },
-  ];
+  const slackInput = document.getElementById('slack-input');
 
-  conversation.forEach(msg => {
-    setTimeout(() => addMessage(msg), msg.delay);
-  });
+  if (interactiveMode) {
+    // Interactive: just show system + bot greeting, then let user type
+    addMessage({ type: 'system', text: `<strong>${agentName}</strong> was added to Acme Corp by ${selectedPartner.name}. Say hello!` });
+    setTimeout(() => {
+      addMessage({ type: 'bot', name: agentName, text: `Hi there! I'm ${agentName}, your AI-powered assistant. I can help answer questions about company policies, PTO, benefits, expenses, and more. Just ask me anything!` });
+      // Enable input
+      slackInput.readOnly = false;
+      slackInput.onkeydown = function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          slackSendMessage();
+        }
+      };
+      setTimeout(() => slackInput.focus(), 100);
+    }, 1200);
+  } else {
+    // Static: original scripted conversation
+    const conversation = [
+      { type: 'system', text: `<strong>${agentName}</strong> was added to Acme Corp by ${selectedPartner.name}. Say hello!`, delay: 600 },
+      { type: 'bot', name: agentName, text: `Hi there! I'm ${agentName}, your AI-powered assistant. I can help answer questions about company policies, PTO, benefits, expenses, and more. Just ask me anything!`, delay: 1800 },
+      { type: 'user', name: 'You', text: 'How many PTO days do new employees get?', delay: 3800 },
+      { type: 'bot', name: agentName, text: 'New full-time employees at Acme Corp receive <strong>15 days of PTO</strong> per year, starting from their first day. This increases to 20 days after 3 years and 25 days after 5 years. PTO accrues monthly and unused days roll over up to a maximum of 5 days. \n\n<em>Source: Employee Handbook, Section 4.2 — Time Off Policy</em>', delay: 5800 },
+    ];
+    slackInput.readOnly = true;
+    slackInput.onkeydown = null;
+    conversation.forEach(msg => {
+      setTimeout(() => addMessage(msg), msg.delay);
+    });
+  }
 
   // Update annotation for phase
   const el = document.getElementById('success-annotation');
   const screens = getScreens();
   el.innerHTML = `<strong>Done!</strong> The agent is live in Slack with its own identity, managed by ${selectedPartner.name}. Users can DM it, mention it, and interact naturally.`;
+}
+
+function slackSendMessage() {
+  const input = document.getElementById('slack-input');
+  const text = input.value.trim();
+  if (!text) return;
+
+  // Add user message
+  addMessage({ type: 'user', name: 'You', text: escapeHtml(text) });
+  input.value = '';
+  input.readOnly = true;
+
+  // Show typing indicator
+  const container = document.getElementById('slack-messages');
+  const typingEl = document.createElement('div');
+  typingEl.id = 'slack-typing-indicator';
+  typingEl.className = 'slack-typing-row';
+  const botInitial = agentName.charAt(0).toUpperCase();
+  typingEl.innerHTML = `
+    <div class="slack-typing-avatar">${botInitial}</div>
+    <div class="slack-typing-dots">
+      <div class="slack-typing-dot"></div>
+      <div class="slack-typing-dot"></div>
+      <div class="slack-typing-dot"></div>
+    </div>
+  `;
+  container.appendChild(typingEl);
+  container.scrollTop = container.scrollHeight;
+
+  // Pick a response (cycle through them)
+  const response = slackBotResponses[slackChatStep % slackBotResponses.length];
+  slackChatStep++;
+
+  // Stream the response after a delay
+  setTimeout(() => {
+    typingEl.remove();
+    slackStreamBotResponse(response.text, () => {
+      input.readOnly = false;
+      input.focus();
+    });
+  }, 1200);
+}
+
+function slackStreamBotResponse(html, callback) {
+  const container = document.getElementById('slack-messages');
+  const initial = agentName.charAt(0).toUpperCase();
+  const time = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+
+  const el = document.createElement('div');
+  el.className = 'slack-msg';
+  el.innerHTML = `
+    <div class="slack-msg-avatar bot">${initial}</div>
+    <div class="slack-msg-content">
+      <div class="slack-msg-header">
+        <span class="slack-msg-name">${agentName}</span>
+        <span class="slack-msg-app-badge">APP</span>
+        <span class="slack-msg-time">${time}</span>
+      </div>
+      <div class="slack-msg-text"></div>
+    </div>
+  `;
+  container.appendChild(el);
+
+  const textEl = el.querySelector('.slack-msg-text');
+  // Split into words but keep HTML tags intact
+  const tokens = html.match(/<[^>]+>|[^\s<]+/g) || [];
+  let i = 0;
+  let buffer = '';
+
+  const streamInterval = setInterval(() => {
+    if (i < tokens.length) {
+      const token = tokens[i];
+      // Add space before non-tag tokens (except first)
+      if (!token.startsWith('<') && buffer.length > 0 && !buffer.endsWith('>')) {
+        buffer += ' ';
+      } else if (!token.startsWith('<') && buffer.length > 0 && buffer.endsWith('>')) {
+        // After a closing/opening tag, still add space before a word if needed
+        const lastNonTag = buffer.replace(/<[^>]+>/g, '');
+        if (lastNonTag.length > 0) buffer += ' ';
+      }
+      buffer += token;
+      textEl.innerHTML = buffer;
+      i++;
+      container.scrollTop = container.scrollHeight;
+    } else {
+      clearInterval(streamInterval);
+      // Final pass to ensure clean HTML
+      textEl.innerHTML = html.replace(/\n/g, '<br>');
+      if (callback) callback();
+    }
+  }, 30);
 }
 
 function addMessage(msg) {
@@ -2129,6 +2351,303 @@ function addMessage(msg) {
 
   container.appendChild(el);
   container.scrollTop = container.scrollHeight;
+}
+
+// ─── Interactive Mode ───
+
+// Static HTML snapshots for resetting
+const abStaticMessages = document.querySelector('#screen-ab-builder .ab-chat-messages')?.innerHTML || '';
+const abStaticAvatar = 'P';
+const abStaticName = 'PolicyBot';
+const abStaticDesc = 'Answers employee policy questions using the company handbook. Provides accurate, sourced responses about PTO, benefits, expenses, and workplace policies.';
+
+function toggleInteractive() {
+  interactiveMode = document.getElementById('interactive-toggle').checked;
+  document.getElementById('interactive-toggle-wrap').classList.toggle('active', interactiveMode);
+  // If we're currently on the AB builder screen, reinit
+  const screens = getScreens();
+  if (selectedPartner && selectedPartner.builderScreen === 'screen-ab-builder' && screens[currentScreen] === 'screen-ab-builder') {
+    if (interactiveMode) {
+      initInteractiveAB();
+    } else {
+      resetABToStatic();
+    }
+  }
+}
+
+function resetABToStatic() {
+  const msgs = document.querySelector('#screen-ab-builder .ab-chat-messages');
+  if (msgs) msgs.innerHTML = abStaticMessages;
+  const input = document.querySelector('#screen-ab-builder .ab-chat-input');
+  if (input) { input.readOnly = true; input.value = ''; input.placeholder = 'Describe your agent...'; input.onkeydown = null; }
+  // Reset preview to static state
+  const avatar = document.getElementById('ab-prev-avatar');
+  const name = document.getElementById('ab-prev-name');
+  const desc = document.getElementById('ab-prev-desc');
+  if (avatar) { avatar.textContent = abStaticAvatar; avatar.className = 'ab-agent-avatar'; }
+  if (name) { name.textContent = abStaticName; name.className = 'ab-agent-name'; }
+  if (desc) { desc.textContent = abStaticDesc; desc.className = 'ab-agent-desc'; }
+  // Restore badges
+  const badgeWrap = document.querySelector('#screen-ab-builder .ab-agent-badges');
+  if (badgeWrap) {
+    badgeWrap.innerHTML = `
+      <span class="ab-agent-badge">Chat / DM</span>
+      <span class="ab-agent-badge">Mentions</span>
+      <span class="ab-agent-badge">App Home</span>
+      <span class="ab-agent-badge">GPT-4o</span>
+    `;
+  }
+  // Re-enable deploy button
+  const btn = document.querySelector('#screen-ab-builder .add-to-slack-btn');
+  if (btn) btn.classList.remove('disabled');
+}
+
+function initInteractiveAB() {
+  abChatStep = 0;
+  agentName = 'PolicyBot'; // reset default
+
+  // Clear chat and add welcome message
+  const msgs = document.querySelector('#screen-ab-builder .ab-chat-messages');
+  msgs.innerHTML = '';
+  abAddAIMessage("Hi! I'm Agent Builder. Describe the agent you'd like to create and I'll set it up for you.");
+
+  // Enable input
+  const input = document.querySelector('#screen-ab-builder .ab-chat-input');
+  input.readOnly = false;
+  input.value = '';
+  input.placeholder = 'Describe your agent...';
+  input.onkeydown = function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      abSendMessage();
+    }
+  };
+  // Focus after a brief delay (screen animation)
+  setTimeout(() => input.focus(), 400);
+
+  // Set preview to empty state
+  const avatar = document.getElementById('ab-prev-avatar');
+  const name = document.getElementById('ab-prev-name');
+  const desc = document.getElementById('ab-prev-desc');
+  avatar.textContent = '?';
+  avatar.className = 'ab-agent-avatar empty';
+  name.textContent = 'Your Agent';
+  name.className = 'ab-agent-name dim';
+  desc.textContent = 'Describe your agent to get started';
+  desc.className = 'ab-agent-desc dim';
+
+  // Clear badges
+  const badgeWrap = document.querySelector('#screen-ab-builder .ab-agent-badges');
+  badgeWrap.innerHTML = '';
+
+  // Disable deploy button
+  const btn = document.querySelector('#screen-ab-builder .add-to-slack-btn');
+  btn.classList.add('disabled');
+}
+
+function abAddUserMessage(text) {
+  const msgs = document.querySelector('#screen-ab-builder .ab-chat-messages');
+  const div = document.createElement('div');
+  div.className = 'ab-msg';
+  div.innerHTML = `
+    <div class="ab-msg-avatar user">Y</div>
+    <div class="ab-msg-content">
+      <div class="ab-msg-name">You</div>
+      <div class="ab-msg-text">${escapeHtml(text)}</div>
+    </div>
+  `;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function abAddAIMessage(html) {
+  const msgs = document.querySelector('#screen-ab-builder .ab-chat-messages');
+  const div = document.createElement('div');
+  div.className = 'ab-msg';
+  div.innerHTML = `
+    <div class="ab-msg-avatar ai">&#10024;</div>
+    <div class="ab-msg-content">
+      <div class="ab-msg-name">Agent Builder</div>
+      <div class="ab-msg-text">${html}</div>
+    </div>
+  `;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+function abShowTyping() {
+  const msgs = document.querySelector('#screen-ab-builder .ab-chat-messages');
+  const div = document.createElement('div');
+  div.className = 'ab-msg';
+  div.id = 'ab-typing-msg';
+  div.innerHTML = `
+    <div class="ab-msg-avatar ai">&#10024;</div>
+    <div class="ab-msg-content">
+      <div class="ab-msg-name">Agent Builder</div>
+      <div class="ab-typing">
+        <div class="ab-typing-dot"></div>
+        <div class="ab-typing-dot"></div>
+        <div class="ab-typing-dot"></div>
+      </div>
+    </div>
+  `;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function abRemoveTyping() {
+  const el = document.getElementById('ab-typing-msg');
+  if (el) el.remove();
+}
+
+function abStreamResponse(text, artifact, callback) {
+  abShowTyping();
+  const words = text.split(' ');
+  let i = 0;
+
+  setTimeout(() => {
+    abRemoveTyping();
+    // Create the AI message container
+    const msgs = document.querySelector('#screen-ab-builder .ab-chat-messages');
+    const div = document.createElement('div');
+    div.className = 'ab-msg';
+    const textEl = document.createElement('span');
+    const cursor = document.createElement('span');
+    cursor.className = 'ab-cursor';
+    div.innerHTML = `
+      <div class="ab-msg-avatar ai">&#10024;</div>
+      <div class="ab-msg-content">
+        <div class="ab-msg-name">Agent Builder</div>
+        <div class="ab-msg-text"></div>
+      </div>
+    `;
+    const msgText = div.querySelector('.ab-msg-text');
+    msgText.appendChild(textEl);
+    msgText.appendChild(cursor);
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+
+    const streamInterval = setInterval(() => {
+      if (i < words.length) {
+        textEl.innerHTML += (i > 0 ? ' ' : '') + words[i];
+        i++;
+        msgs.scrollTop = msgs.scrollHeight;
+      } else {
+        clearInterval(streamInterval);
+        cursor.remove();
+        // Add artifact if provided
+        if (artifact) {
+          setTimeout(() => {
+            const content = div.querySelector('.ab-msg-content');
+            const artDiv = document.createElement('div');
+            artDiv.className = 'ab-msg-artifact';
+            artDiv.style.animation = 'abFadeInUp 0.4s ease forwards';
+            artDiv.innerHTML = artifact;
+            content.appendChild(artDiv);
+            msgs.scrollTop = msgs.scrollHeight;
+            if (callback) setTimeout(callback, 300);
+          }, 400);
+        } else {
+          if (callback) callback();
+        }
+      }
+    }, 35);
+  }, 800);
+}
+
+function escapeHtml(text) {
+  const d = document.createElement('div');
+  d.textContent = text;
+  return d.innerHTML;
+}
+
+function abSendMessage() {
+  const input = document.querySelector('#screen-ab-builder .ab-chat-input');
+  const text = input.value.trim();
+  if (!text || abChatStep >= 3) return;
+
+  // Add user message
+  abAddUserMessage(text);
+  input.value = '';
+  input.readOnly = true; // disable while AI responds
+
+  if (abChatStep === 0) {
+    // Step 1: Describe the agent
+    abStreamResponse(
+      "I'll create a policy assistant for you. It'll help employees find answers about PTO, benefits, and workplace policies. What would you like to name this agent?",
+      null,
+      () => {
+        abChatStep = 1;
+        input.readOnly = false;
+        input.placeholder = 'Enter a name for your agent...';
+        input.focus();
+        // Update preview: show description
+        const desc = document.getElementById('ab-prev-desc');
+        desc.textContent = 'Answers employee policy questions using the company handbook. Provides accurate, sourced responses about PTO, benefits, expenses, and workplace policies.';
+        desc.className = 'ab-agent-desc';
+      }
+    );
+  } else if (abChatStep === 1) {
+    // Step 2: Name the agent
+    agentName = text.substring(0, 30);
+    const safeName = escapeHtml(agentName);
+    abStreamResponse(
+      `<strong>${safeName}</strong> — great name! Now let's configure capabilities. Which model and Slack features should I enable? (e.g., GPT-4o, chat, mentions, app home)`,
+      null,
+      () => {
+        abChatStep = 2;
+        input.readOnly = false;
+        input.placeholder = 'Describe model and capabilities...';
+        input.focus();
+        // Update preview: name + avatar
+        const avatar = document.getElementById('ab-prev-avatar');
+        const name = document.getElementById('ab-prev-name');
+        avatar.textContent = agentName.charAt(0).toUpperCase();
+        avatar.className = 'ab-agent-avatar';
+        name.textContent = agentName;
+        name.className = 'ab-agent-name';
+      }
+    );
+  } else if (abChatStep === 2) {
+    // Step 3: Capabilities
+    const safeName = escapeHtml(agentName);
+    const artifactHtml = `
+      <div class="ab-msg-artifact-header">&#128196; agent.config.ts</div>
+      <div class="ab-msg-artifact-body">
+<span class="kw">export default</span> {
+  name: <span class="str">"${safeName}"</span>,
+  description: <span class="str">"Answers employee policy questions"</span>,
+  model: <span class="str">"gpt-4o"</span>,
+  capabilities: [<span class="str">"chat"</span>, <span class="str">"mentions"</span>, <span class="str">"app_home"</span>],
+  knowledge: [<span class="str">"./handbook.pdf"</span>],
+} <span class="cm">// ready to deploy</span>
+      </div>
+    `;
+    abStreamResponse(
+      `Your agent is configured and ready to deploy! Here's the final configuration:`,
+      artifactHtml,
+      () => {
+        abChatStep = 3;
+        input.readOnly = true;
+        input.placeholder = 'Agent configured! Click "Add to Slack" to deploy.';
+        // Update preview: badges + enable deploy
+        const badgeWrap = document.querySelector('#screen-ab-builder .ab-agent-badges');
+        const badges = ['Chat / DM', 'Mentions', 'App Home', 'GPT-4o'];
+        badgeWrap.innerHTML = '';
+        badges.forEach((b, idx) => {
+          const span = document.createElement('span');
+          span.className = 'ab-agent-badge ab-badge-animate';
+          span.style.animationDelay = (idx * 0.1) + 's';
+          span.textContent = b;
+          badgeWrap.appendChild(span);
+        });
+        // Enable deploy button
+        const btn = document.querySelector('#screen-ab-builder .add-to-slack-btn');
+        btn.classList.remove('disabled');
+      }
+    );
+  }
 }
 
 // ─── Init ───
