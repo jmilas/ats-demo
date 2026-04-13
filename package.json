@@ -1,7 +1,7 @@
 {
   "name": "ats-demo",
   "version": "1.0.0",
-  "description": "Add Agent to Slack - Interactive Demo",
+  "description": "Add to Slack - Interactive Demo",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
